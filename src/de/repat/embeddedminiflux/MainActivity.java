@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
 
 	private SharedPreferences prefs = null;
 	private WebView webview = null;
+	private Bundle wvBundle;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -108,7 +109,28 @@ public class MainActivity extends Activity {
 			alert.show();
 		} else {
 			String url = prefs.getString("minifluxURL", "");
-			webview.loadUrl(url);
+			if (wvBundle == null) {
+					webview.loadUrl(url);
+			} else {
+					webview.restoreState(wvBundle);
+			}
 		}
+	}
+
+	@Override
+	public void onBackPressed( ){
+			if (webview.canGoBack()) {
+					webview.goBack();
+			} else {
+					super.onBackPressed();
+			}
+	}
+
+	@Override
+	public void onPause() {
+			super.onPause();
+
+			wvBundle = new Bundle();
+			webview.saveState(wvBundle);
 	}
 }
